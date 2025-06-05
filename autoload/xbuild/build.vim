@@ -17,7 +17,11 @@ function! xbuild#build#Run() abort
   let l:cmd = 'xcodebuild ' . l:root .
       \ ' -scheme ' . shellescape(g:xbuild_scheme) .
       \ ' -destination ' . shellescape(g:xbuild_destination) .
-      \ ' build | xcpretty'
+      \ ' build'
+
+  if executable('xcpretty')
+	  let l:cmd .= ' | xcpretty'
+  endif
 
   
   call xbuild#core#RunAsyncCommandInBuffer(cmd)

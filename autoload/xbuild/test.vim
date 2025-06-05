@@ -17,7 +17,11 @@ function! xbuild#test#Run() abort
   let l:cmd = 'xcodebuild ' . l:root .
       \ ' -scheme ' . shellescape(g:xbuild_scheme) .
       \ ' -destination ' . shellescape(g:xbuild_destination) .
-      \ ' test | xcpretty'
+      \ ' test'
+
+  if executable('xcpretty')
+    let l:cmd .= ' | xcpretty'
+  endif
 
   
   call xbuild#core#RunAsyncCommandInBuffer(cmd)
@@ -42,8 +46,11 @@ function! xbuild#test#RunWithoutBuilding() abort
   let l:cmd = 'xcodebuild ' . l:root .
       \ ' -scheme ' . shellescape(g:xbuild_scheme) .
       \ ' -destination ' . shellescape(g:xbuild_destination) .
-      \ ' test-without-building | xcpretty'
+      \ ' test-without-building'
   
+  if executable('xcpretty')
+    let l:cmd .= ' | xcpretty'
+  endif
 
   call xbuild#core#RunAsyncCommandInBuffer(cmd)
 endfunction

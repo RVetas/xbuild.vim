@@ -27,7 +27,11 @@ function! xbuild#run#BuildAndRun() abort
   let l:build_cmd = 'xcodebuild ' . l:root .
         \ ' -scheme ' . shellescape(g:xbuild_scheme) .
         \ ' -destination ' . shellescape(g:xbuild_destination) .
-        \ ' build install | xcpretty'
+        \ ' build install'
+
+  if executable('xcpretty')
+	  let l:build_cmd .= ' | xcpretty'
+  endif
 
 
 
