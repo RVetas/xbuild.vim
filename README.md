@@ -25,8 +25,5 @@ Run common development tasks without leaving Vim:
 
 Using vim's plugins:
 ```
-# https:
-git clone git@github.com:RVetas/xbuild.vim.git ~/.vim/pack/plugins/start/xbuild.vim
-# ssh:
 git clone git@github.com:RVetas/xbuild.vim.git ~/.vim/pack/plugins/start/xbuild.vim
 ```
