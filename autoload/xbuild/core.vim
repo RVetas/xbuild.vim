@@ -109,3 +109,7 @@ function! xbuild#core#GetBundleIdentifierAsync(callback) abort
   \)
 
 endfunction
+
+function! xbuild#core#CachePath() abort
+	return getcwd() . '/.xbuild'
+endfunction

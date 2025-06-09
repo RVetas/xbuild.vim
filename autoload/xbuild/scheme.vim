@@ -40,6 +40,10 @@ function! xbuild#scheme#Pick() abort
     return
   endif
 
+  " Save schemes to cache
+  call system('mkdir -p ' . shellescape(xbuild#core#CachePath()))
+  call writefile([json_encode(l:schemes)], xbuild#scheme#Path())
+
   echo "Available schemes:"
   for i in range(len(l:schemes))
     echo printf("[%d] %s", i + 1, l:schemes[i])
@@ -52,4 +56,8 @@ function! xbuild#scheme#Pick() abort
   else
     echo "Invalid choice"
   endif
+endfunction
+
+function! xbuild#scheme#Path() abort
+	return getcwd() . '/.xbuild/xbuild_schemes_cache.json'
 endfunction

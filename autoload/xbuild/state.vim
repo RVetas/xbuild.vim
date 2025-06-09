@@ -1,5 +1,5 @@
 function! xbuild#state#Path() abort
-  return getcwd() . '/.xbuild_state.json'
+  return getcwd() . '/.xbuild/xbuild_state.json'
 endfunction
 
 function! xbuild#state#Load() abort
@@ -20,5 +20,7 @@ function! xbuild#state#Save() abort
         \ 'xbuild_scheme': get(g:, 'xbuild_scheme', ''),
         \ 'xbuild_destination': get(g:, 'xbuild_destination', '')
         \ }
+
+  call system('mkdir -p ' . shellescape(xbuild#core#CachePath()))
   call writefile([json_encode(l:data)], xbuild#state#Path())
 endfunction
