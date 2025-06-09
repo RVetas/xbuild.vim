@@ -1,38 +1,38 @@
 function! xbuild#destination#Pick() abort
   if empty(g:xbuild_scheme)
-    echoerr "[xbuild.vim]: Укажите g:xbuild_scheme перед выбором destination"
+    echoerr "[xbuild.vim]: Call :XScheme or set g:xbuild_scheme"
     return
   endif
 
 
   let l:project = xbuild#core#FindProjectRoot()
   if empty(l:project)
-    echoerr "[xbuild.vim]: Не найден .xcworkspace или .xcodeproj"
+    echoerr "[xbuild.vim]: .xcworkspace or .xcodeproj not found in the current working directory"
     return
   endif
 
   let cmd = 'xcodebuild -showdestinations -scheme ' . shellescape(g:xbuild_scheme) . ' ' . l:project
   let output = systemlist(cmd)
   if v:shell_error
-    echoerr "[xbuild.vim]: Ошибка при вызове xcodebuild"
+    echoerr "[xbuild.vim]: Error occurred during xcodebuild call"
     return
   endif
 
   let destinations = filter(output, 'v:val =~ "platform:"')
 
   if empty(destinations)
-    echo "[xbuild.vim]: Не найдено доступных destination"
+    echo "[xbuild.vim]: No available destinations found"
     return
   endif
 
-  echo "Выберите destination:"
+  echo "Choose destination:"
   for i in range(len(destinations))
     echo printf("%2d. %s", i + 1, destinations[i])
   endfor
 
-  let choice = input("Введите номер: ")
+  let choice = input("Input number: ")
   if choice !~ '^\d\+$' || str2nr(choice) < 1 || str2nr(choice) > len(destinations)
-    echo "Неверный выбор"
+    echo "Invalid choice"
     return
   endif
 
@@ -40,7 +40,7 @@ function! xbuild#destination#Pick() abort
   let l:line = substitute(l:line, '^\t\+', '', '')
   let l:line = ConvertToCSVFormat(l:line)
   let g:xbuild_destination = 'id=' . matchstr(l:line, 'id=\zs[^,]*')
-  echo "Выбрано: " . g:xbuild_destination
+  echo "Chosen: " . g:xbuild_destination
 endfunction
 
 function! ConvertToCSVFormat(s) abort

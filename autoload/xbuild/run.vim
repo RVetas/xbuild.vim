@@ -85,7 +85,6 @@ function! xbuild#run#Run() abort
 endfunction
 
 function! xbuild#run#OnBundle(bundle_id)
-	echom '[xbuild.vim] WTF?'
 	if empty(a:bundle_id)
 		echohl ErrorMsg
 		echom "[xbuild.vim]: Could not determine bundle identifier"
