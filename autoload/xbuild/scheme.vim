@@ -46,7 +46,7 @@ function! xbuild#scheme#InnerPick(...) abort
 endfunction
 
 function! xbuild#scheme#PopupSelect(id, result) abort
-	if result == -1
+	if a:result == -1
 		return
 	endif
 
