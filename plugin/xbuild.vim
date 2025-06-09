@@ -2,11 +2,15 @@ if exists('g:loaded_xbuild')
 	finish
 endif
 
-if empty(xbuild#core#FindProjectRoot())
+let s:project = xbuild#core#FindProjectRoot() 
+if empty(s:project)
 	finish
 endif
 
 let g:loaded_xbuild = 1
+
+" Current project
+let g:xbuild_project = s:project
 
 " Current destination for xcodebuild
 let g:xbuild_destination = ''

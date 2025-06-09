@@ -4,14 +4,7 @@ function! xbuild#destination#Pick() abort
     return
   endif
 
-
-  let l:project = xbuild#core#FindProjectRoot()
-  if empty(l:project)
-    echoerr "[xbuild.vim]: .xcworkspace or .xcodeproj not found in the current working directory"
-    return
-  endif
-
-  let cmd = 'xcodebuild -showdestinations -scheme ' . shellescape(g:xbuild_scheme) . ' ' . l:project
+  let cmd = 'xcodebuild -showdestinations -scheme ' . shellescape(g:xbuild_scheme) . ' ' . g:xbuild_project
   let output = systemlist(cmd)
   if v:shell_error
     echoerr "[xbuild.vim]: Error occurred during xcodebuild call"

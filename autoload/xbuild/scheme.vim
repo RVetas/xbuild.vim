@@ -1,12 +1,6 @@
 " autoload/xbuild/scheme.vim
 function! xbuild#scheme#Pick() abort
-  let l:project = xbuild#core#FindProjectRoot()
-  if l:project ==# ''
-    echo "[xbuild.vim]: No .xcworkspace or .xcodeproj found"
-    return
-  endif
-
-  let l:cmd = 'xcodebuild -list -json ' . l:project
+  let l:cmd = 'xcodebuild -list -json ' . g:xbuild_project
   let l:output = systemlist(l:cmd)
 
   if v:shell_error != 0

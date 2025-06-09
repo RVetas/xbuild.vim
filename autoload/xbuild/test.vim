@@ -6,15 +6,7 @@ function! xbuild#test#Run() abort
     return
   endif
 
-  let l:root = xbuild#core#FindProjectRoot()
-  if empty(l:root)
-    echohl ErrorMsg
-    echom "[xbuild.vim]: Could not find .xcodeproj or .xcworkspace"
-    echohl None
-    return
-  endif
-
-  let l:cmd = 'xcodebuild ' . l:root .
+  let l:cmd = 'xcodebuild ' . g:xbuild_project .
       \ ' -scheme ' . shellescape(g:xbuild_scheme) .
       \ ' -destination ' . shellescape(g:xbuild_destination) .
       \ ' test'
@@ -35,15 +27,7 @@ function! xbuild#test#RunWithoutBuilding() abort
     return
   endif
 
-  let l:root = xbuild#core#FindProjectRoot()
-  if empty(l:root)
-    echohl ErrorMsg
-    echom "[xbuild.vim]: Could not find .xcodeproj or .xcworkspace"
-    echohl None
-    return
-  endif
-
-  let l:cmd = 'xcodebuild ' . l:root .
+  let l:cmd = 'xcodebuild ' . g:xbuild_project .
       \ ' -scheme ' . shellescape(g:xbuild_scheme) .
       \ ' -destination ' . shellescape(g:xbuild_destination) .
       \ ' test-without-building'

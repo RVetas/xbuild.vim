@@ -6,14 +6,6 @@ function! xbuild#run#BuildAndRun() abort
     return
   endif
 
-  let l:root = xbuild#core#FindProjectRoot()
-  if empty(l:root)
-    echohl ErrorMsg
-    echom "[xbuild.vim]: Could not find .xcodeproj or .xcworkspace"
-    echohl None
-    return
-  endif
-
   " Извлечь UDID симулятора из destination-строки
   let l:id_match = matchstr(g:xbuild_destination, 'id=\zs[^,]\+')
   if empty(l:id_match)
@@ -24,7 +16,7 @@ function! xbuild#run#BuildAndRun() abort
   endif
 
   " Установить и запустить
-  let l:build_cmd = 'xcodebuild ' . l:root .
+  let l:build_cmd = 'xcodebuild ' . g:xbuild_project .
         \ ' -scheme ' . shellescape(g:xbuild_scheme) .
         \ ' -destination ' . shellescape(g:xbuild_destination) .
         \ ' build install'
@@ -62,13 +54,6 @@ function! xbuild#run#Run() abort
     return
   endif
 
-  let l:root = xbuild#core#FindProjectRoot()
-  if empty(l:root)
-    echohl ErrorMsg
-    echom "[xbuild.vim]: Could not find .xcodeproj or .xcworkspace"
-    echohl None
-    return
-  endif
 
   " Извлечь UDID симулятора из destination-строки
   let s:id_match = matchstr(g:xbuild_destination, 'id=\zs[^,]\+')
