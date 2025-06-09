@@ -66,7 +66,6 @@ function! xbuild#core#RunAsyncCommandInBuffer(command)
   " Назначаем колбэки
   call ch_setoptions(l:chan, {
         \ 'out_cb': l:On_stdout,
-		"\ 'err_cb': l:On_stdout,
         \ 'close_cb': l:On_close,
         \ })
 

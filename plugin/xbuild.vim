@@ -8,6 +8,7 @@ if empty(s:project)
 endif
 
 let g:loaded_xbuild = 1
+call system('mkdir -p ' . shellescape(xbuild#core#CachePath()))
 
 " Current project
 let g:xbuild_project = s:project
@@ -21,7 +22,6 @@ let g:xbuild_scheme = ''
 " This command allows to choose destination
 command! XDestination call xbuild#destination#Pick()
 command! XScheme call xbuild#scheme#Pick()
-command! XWorkspace call xbuild#core#FindProjectRoot()
 command! XBuild call xbuild#build#Run()
 command! XTest call xbuild#test#Run()
 command! XTestWithoutBuilding call xbuild#test#RunWithoutBuilding()
