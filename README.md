@@ -15,6 +15,7 @@ Run common development tasks without leaving Vim:
 | `:XTestWithoutBuilding` | Runs tests without building (assumes the target is already built). |
 | `:XRun` | Builds and runs the app on the selected destination. |
 | `:XRunWithoutBuilding` | Launches the app on the selected destinations (assumes it's already installed). |
+| `:XInfo` | Shows current settings such as scheme, destination and etc. |
 
 ## ⚙️ Requirements
 

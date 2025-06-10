@@ -26,6 +26,7 @@ command! XTest call xbuild#test#Run()
 command! XTestWithoutBuilding call xbuild#test#RunWithoutBuilding()
 command! XRun call xbuild#run#BuildAndRun()
 command! XRunWithoutBuilding call xbuild#run#Run()
+command! XInfo call xbuild#info#Show()
 
 autocmd VimEnter * call xbuild#state#Load()
 autocmd VimLeavePre * call xbuild#state#Save()
