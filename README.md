@@ -8,7 +8,6 @@ Run common development tasks without leaving Vim:
 
 | Command                   | Description                                                                     |
 |---------------------------|---------------------------------------------------------------------------------|
-| `:XWorkspace`             | Automatically finds and sets the `.xcworkspace` for the current project.        |
 | `:XScheme`                | Select a build scheme (`-scheme`).                                              |
 | `:XDestination`           | Choose a destination (`-destination`) for building, testing, or running.        |
 | `:XBuild`                 | Builds the current project using the selected scheme and destination.           |
