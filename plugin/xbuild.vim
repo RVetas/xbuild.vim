@@ -19,7 +19,6 @@ let g:xbuild_destination = {}
 " Current scheme
 let g:xbuild_scheme = ''
 
-" This command allows to choose destination
 command! XDestination call xbuild#destination#Pick()
 command! XScheme call xbuild#scheme#Pick()
 command! XBuild call xbuild#build#Run()

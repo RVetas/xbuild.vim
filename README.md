@@ -19,7 +19,7 @@ Run common development tasks without leaving Vim:
 ## ⚙️ Requirements
 
 - macOS with Xcode and `xcodebuild`
-- [`xcpretty`](https://github.com/supermarin/xcpretty) for clean output
+- _Optional_ [`xcpretty`](https://github.com/supermarin/xcpretty) for clean output
 
 ## 📦 Installation
 
