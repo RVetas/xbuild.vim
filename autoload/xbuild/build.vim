@@ -1,20 +1,21 @@
 function! xbuild#build#Run() abort
-  if empty(get(g:, 'xbuild_scheme', '')) || empty(get(g:, 'xbuild_destination', ''))
-    echohl ErrorMsg
-    echom "[xbuild.vim]: Scheme or Destination not selected. Run :XScheme and :XDestination."
-    echohl None
-    return
-  endif
+	let l:destination_id = get(g:xbuild_destination, 'id', '')
+	if empty(g:xbuild_scheme) || empty(l:destination_id)
+		echohl ErrorMsg
+		echom "[xbuild.vim]: Scheme or Destination not selected. Run :XScheme and :XDestination."
+		echohl None
+		return
+	endif
 
-  let l:cmd = 'xcodebuild ' . g:xbuild_project .
-      \ ' -scheme ' . shellescape(g:xbuild_scheme) .
-      \ ' -destination ' . shellescape(g:xbuild_destination) .
-      \ ' build'
+	let l:cmd = 'xcodebuild ' . g:xbuild_project .
+	  \ ' -scheme ' . shellescape(g:xbuild_scheme) .
+	  \ ' -destination id=' . l:destination_id .
+	  \ ' build'
 
-  if executable('xcpretty')
+	if executable('xcpretty')
 	  let l:cmd .= ' | xcpretty'
-  endif
-  
-  call xbuild#core#RunAsyncCommandInBuffer(cmd)
+	endif
+
+	call xbuild#core#RunAsyncCommandInBuffer(cmd)
 endfunction
 

@@ -52,8 +52,12 @@ function! xbuild#core#RunAsyncCommandInBuffer(command)
         \ map(split(msg, "\n"), {_, line ->
         \   line !=# '' ? appendbufline(l:bufnr, '$', [line]) : 0 })}
 
+  let l:On_stderr = {chan, msg ->
+        \ map(split(msg, "\n"), {_, line ->
+        \   line !=# '' ? appendbufline(l:bufnr, '$', ["stderr: " . line]) : 0 })}
+
   let l:On_close = {chan ->
-        \ appendbufline(l:bufnr, '$', ['--- End ---']) }
+			  \ appendbufline(l:bufnr, '$', ['--- [xbuild.vim] END ---']) }
 
   " Запускаем команду
   let l:job = job_start(['sh', '-c', a:command])
@@ -66,6 +70,7 @@ function! xbuild#core#RunAsyncCommandInBuffer(command)
   " Назначаем колбэки
   call ch_setoptions(l:chan, {
         \ 'out_cb': l:On_stdout,
+		\ 'err_cb': l:On_stderr,
         \ 'close_cb': l:On_close,
         \ })
 

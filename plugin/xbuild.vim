@@ -14,7 +14,7 @@ call system('mkdir -p ' . shellescape(xbuild#core#CachePath()))
 let g:xbuild_project = s:project
 
 " Current destination for xcodebuild
-let g:xbuild_destination = ''
+let g:xbuild_destination = {}
 
 " Current scheme
 let g:xbuild_scheme = ''
@@ -25,8 +25,8 @@ command! XScheme call xbuild#scheme#Pick()
 command! XBuild call xbuild#build#Run()
 command! XTest call xbuild#test#Run()
 command! XTestWithoutBuilding call xbuild#test#RunWithoutBuilding()
-command! XBuildAndRun call xbuild#run#BuildAndRun()
-command! XRun call xbuild#run#Run()
+command! XRun call xbuild#run#BuildAndRun()
+command! XRunWithoutBuilding call xbuild#run#Run()
 
 autocmd VimEnter * call xbuild#state#Load()
 autocmd VimLeavePre * call xbuild#state#Save()

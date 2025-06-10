@@ -3,16 +3,15 @@ function! xbuild#state#Path() abort
 endfunction
 
 function! xbuild#state#Load() abort
-  let l:path = xbuild#state#Path()
-  if filereadable(l:path)
-    let l:lines = readfile(l:path)
-    let l:data = json_decode(join(l:lines, "\n"))
-    let g:xbuild_scheme = get(l:data, 'xbuild_scheme', '')
-    let g:xbuild_destination = get(l:data, 'xbuild_destination', '')
-  else
-    let g:xbuild_scheme = ''
-    let g:xbuild_destination = ''
-  endif
+	let l:path = xbuild#state#Path()
+	if !filereadable(l:path)
+		return
+	endif
+
+	let l:lines = readfile(l:path)
+	let l:data = json_decode(join(l:lines, "\n"))
+	let g:xbuild_scheme = get(l:data, 'xbuild_scheme', '')
+	let g:xbuild_destination = get(l:data, 'xbuild_destination', '')
 endfunction
 
 function! xbuild#state#Save() abort

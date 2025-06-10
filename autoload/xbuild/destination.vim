@@ -125,8 +125,7 @@ function! xbuild#destination#PopupSelect(id, result) abort
 		return
 	endif
 
-	let l:choice = s:destinations[a:result - 1]
-	let g:xbuild_destination = 'id=' . get(l:choice, 'id', '')
+	let g:xbuild_destination = s:destinations[a:result - 1]
 	let s:choices = []
 	let s:destinations = []
 	echomsg ''
