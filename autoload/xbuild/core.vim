@@ -9,7 +9,7 @@ function! xbuild#core#FindProjectRoot() abort
 
   let files = glob('*.xcodeproj', 0, 1)
   if !empty(files)
-    return [shellescape(fnamemodify(files[0], ':t')), 0]
+    return [fnamemodify(files[0], ':t'), 0]
   endif
 
   return []

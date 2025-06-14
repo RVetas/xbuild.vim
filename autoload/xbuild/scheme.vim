@@ -1,5 +1,5 @@
 function! xbuild#scheme#SynchronouslyUpdateSchemesCache() abort
-	let l:cmd = xbuild#command#Xcodebuild("-list", {"json": "", (g:xbuild_project_option): g:xbuild_project}) . ' > ' . xbuild#scheme#Path()
+	let l:cmd = xbuild#command#Xcodebuild("-list", extend({"json":""}, xbuild#command#ProjectOptions())) . ' > ' . xbuild#scheme#Path()
 	let l:output = system(['sh', '-c', l:cmd])
 
 	if v:shell_error != 0
@@ -13,12 +13,15 @@ endfunction
 
 function! xbuild#scheme#Pick() abort
 	if filereadable(xbuild#scheme#Path())
-		call xbuild#scheme#InnerPick()
-		return
+		let contents = readfile(xbuild#scheme#Path())
+		if !empty(contents)
+			call xbuild#scheme#InnerPick()
+			return
+		endif
 	endif
 
 	" If cache does not exist, update cache, then call pick function
-	let l:cmd = xbuild#command#Xcodebuild("-list", {"json": "", (g:xbuild_project_option): g:xbuild_project}) . ' > ' . xbuild#scheme#Path()
+	let l:cmd = xbuild#command#Xcodebuild("-list", extend({"json":""}, xbuild#command#ProjectOptions())) . ' > ' . xbuild#scheme#Path()
 	echom "[xbuild.vim]: Retrieving schemes..." . cmd
 	call job_start(['sh', '-c', l:cmd], {'exit_cb': function('xbuild#scheme#InnerPick')})
 	return
@@ -66,12 +69,11 @@ function! xbuild#scheme#ExtractSchemesFromCache() abort
 		echohl None
 		return
 	endif
-
 	let l:json_str = readfile(xbuild#scheme#Path())
 	try
 		let l:parsed = json_decode(join(l:json_str, "\n"))
 	catch
-		echoerr "[xbuild.vim]: Failed to parse xcodebuild JSON output"
+		echoerr "[xbuild.vim]: Failed to parse xcodebuild JSON output: " .. v:exception
 		return
 	endtry
 
