@@ -11,13 +11,7 @@ function! xbuild#command#Xcodebuild(action, options) abort
 endfunction
 
 function! xbuild#command#DefaultOptions() abort
-	let workspace_options = {}
-	if g:xbuild_is_workspace
-		let workspace_options = {"workspace": g:xbuild_project, "scheme": g:xbuild_scheme}
-	else
-		let workspace_options = {"project": g:xbuild_project}
-	endif
-
+	let workspace_options = xbuild#command#ProjectOptions()
 	return extend(workspace_options, {"destination": xbuild#destination#ToString(g:xbuild_destination)})
 endfunction
 
@@ -29,6 +23,10 @@ function! xbuild#command#ProjectOptions() abort
 			return {"workspace": g:xbuild_project}
 		endif
 	else
-		return {"project": g:xbuild_project}
+		if !empty(g:xbuild_scheme)
+			return {"project": g:xbuild_project, "scheme": g:xbuild_scheme}
+		else
+			return {"project": g:xbuild_project}
+		endif
 	endif
 endfunction
