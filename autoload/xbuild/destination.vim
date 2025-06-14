@@ -26,7 +26,7 @@ function! xbuild#destination#Pick() abort
 
 	echom "[xbuild.vim]: Retrieving destinations..."
 	let s:tempfile = tempname()
-	let l:command = 'xcodebuild -showdestinations -scheme ' . shellescape(g:xbuild_scheme) . ' ' . g:xbuild_project . ' > ' . s:tempfile
+	let l:command = xbuild#command#Xcodebuild("-showdestinations", xbuild#command#ProjectOptions()) . ' > ' . s:tempfile
 	let l:cmd = ['sh', '-c', l:command]
 	call job_start(l:cmd, {'exit_cb': function('xbuild#destination#PickFromXcodebuild')})
 endfunction
@@ -146,5 +146,14 @@ function! xbuild#destination#ConvertToCSVFormat(s) abort
   let s = trim(s)
 
   return s
+endfunction
+
+function! xbuild#destination#ToString(destination) abort
+	if has_key(a:destination, "id")
+		return "id=" . a:destination["id"]
+	else
+		echoerr "[xbuild.vim]: IMPLEMENT xbuild#destination#ToString"
+		return ""
+	endif
 endfunction
 

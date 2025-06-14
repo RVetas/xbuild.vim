@@ -7,10 +7,7 @@ function! xbuild#build#Run() abort
 		return
 	endif
 
-	let l:cmd = 'xcodebuild ' . g:xbuild_project .
-	  \ ' -scheme ' . shellescape(g:xbuild_scheme) .
-	  \ ' -destination id=' . l:destination_id .
-	  \ ' build'
+	let cmd = xbuild#command#Xcodebuild("build", xbuild#command#DefaultOptions())
 
 	if executable('xcpretty')
 	  let l:cmd .= ' | xcpretty'

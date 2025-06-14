@@ -11,7 +11,9 @@ let g:loaded_xbuild = 1
 call system('mkdir -p ' . shellescape(xbuild#core#CachePath()))
 
 " Current project
-let g:xbuild_project = s:project
+let g:xbuild_project = s:project[0]
+let g:xbuild_is_workspace = s:project[1]
+let g:xbuild_project_option = s:project[1] ? "workspace" : "project"
 
 " Current destination for xcodebuild
 let g:xbuild_destination = {}

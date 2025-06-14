@@ -1,18 +1,18 @@
 " Search for project file (*.xcworkspace or *.xcodeproj)
+" return project name and bool value that indicates whether it is a project or
+" a workspace (workspace = true, project = false)
 function! xbuild#core#FindProjectRoot() abort
   let files = glob('*.xcworkspace', 0, 1)
   if !empty(files)
-	let result = '-workspace ' . shellescape(fnamemodify(files[0], ':t'))
-    return '-workspace ' . shellescape(fnamemodify(files[0], ':t'))
+    return [fnamemodify(files[0], ':t'), 1]
   endif
 
   let files = glob('*.xcodeproj', 0, 1)
   if !empty(files)
-	let result = '-workspace ' . shellescape(fnamemodify(files[0], ':t'))
-    return '-project ' . shellescape(fnamemodify(files[0], ':t'))
+    return [shellescape(fnamemodify(files[0], ':t')), 0]
   endif
 
-  return ''
+  return []
 endfunction
 
 function! xbuild#core#ExtractJson(output) abort
@@ -81,36 +81,26 @@ function! xbuild#core#RunAsyncCommandInBuffer(command)
   augroup END
 endfunction
 
-function! xbuild#core#GetBundleIdentifier() abort
-  let l:cmd = 'xcodebuild -showBuildSettings ' . xbuild#core#FindProjectRoot() .
-        \ ' -scheme ' . shellescape(g:xbuild_scheme)
-  let l:output = systemlist(l:cmd)
-
-  for l:line in l:output
-    if l:line =~# '^\s*PRODUCT_BUNDLE_IDENTIFIER\s*='
-      return trim(split(l:line, '=')[1])
-    endif
-  endfor
-
-  return ''
+" Return: a dictionary representing build settings. 
+function! xbuild#core#GetBuildSettings() abort
+	let cmd = xbuild#command#Xcodebuild("-showBuildSettings", extend({"json":""}, xbuild#command#DefaultOptions()))
+	let output = system(cmd . ' 2>/dev/null')
+	let parsed = json_decode(output)
+	return parsed[0]['buildSettings']
 endfunction
+	
+function! xbuild#core#GetBuildSettingsAsync(callback) abort
+	let l:cmd = xbuild#command#Xcodebuild("-showBuildSettings", extend({"json":""}, xbuild#command#DefaultOptions()))
+	let l:tempfile = tempname()
 
-function! xbuild#core#GetBundleIdentifierAsync(callback) abort
-  let l:cmd = 'xcodebuild -showBuildSettings ' . xbuild#core#FindProjectRoot() .
-        \ ' -scheme ' . shellescape(g:xbuild_scheme) .
-        \ " | grep '^ *PRODUCT_BUNDLE_IDENTIFIER *= ' | head -n1 | awk -F= '{print $2}' | tr -d ' '"
-
-  let l:tempfile = tempname()
-
-  " Обёртка: записать результат в tempfile, а потом прочитать и передать в callback
-  call job_start(
-  \ ['sh', '-c', l:cmd . ' > ' . l:tempfile],
-  \ {
-  \   'exit_cb': {-> execute(
-  \     'call ' . a:callback . '(' . string(join(readfile(l:tempfile), "\n")) . ')'
-  \   )}
-  \ }
-  \)
+	call job_start(
+	\ ['sh', '-c', l:cmd . ' > ' . l:tempfile],
+	\ {
+	\   'exit_cb': {-> execute(
+	\     'call ' . a:callback . '(' . string(join(readfile(l:tempfile), "\n")) . ')'
+	\   )}
+	\ }
+	\)
 
 endfunction
 

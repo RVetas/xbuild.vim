@@ -1,5 +1,5 @@
 function! xbuild#scheme#SynchronouslyUpdateSchemesCache() abort
-	let l:cmd = 'xcodebuild -list -json ' . g:xbuild_project . ' > ' . xbuild#scheme#Path()
+	let l:cmd = xbuild#command#Xcodebuild("-list", {"json": "", (g:xbuild_project_option): g:xbuild_project}) . ' > ' . xbuild#scheme#Path()
 	let l:output = system(['sh', '-c', l:cmd])
 
 	if v:shell_error != 0
@@ -18,8 +18,8 @@ function! xbuild#scheme#Pick() abort
 	endif
 
 	" If cache does not exist, update cache, then call pick function
-	echom "[xbuild.vim]: Retrieving schemes..."
-	let l:cmd = 'xcodebuild -list -json ' . g:xbuild_project . ' > ' . xbuild#scheme#Path()
+	let l:cmd = xbuild#command#Xcodebuild("-list", {"json": "", (g:xbuild_project_option): g:xbuild_project}) . ' > ' . xbuild#scheme#Path()
+	echom "[xbuild.vim]: Retrieving schemes..." . cmd
 	call job_start(['sh', '-c', l:cmd], {'exit_cb': function('xbuild#scheme#InnerPick')})
 	return
 endfunction
