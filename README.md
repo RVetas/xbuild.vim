@@ -29,3 +29,16 @@ Using vim's plugins:
 ```
 git clone git@github.com:RVetas/xbuild.vim.git ~/.vim/pack/plugins/start/xbuild.vim
 ```
+
+## xbuild.vim in action
+### `:XRun`
+<img src="./screenshots/xrun.gif">
+
+### `:XBuild`
+<img src="./screenshots/xbuild.gif">
+
+### `:XDestination`
+<img src="./screenshots/xdest.gif">
+
+### `:XInfo`
+<img src="./screenshots/xinfo.png">

@@ -32,6 +32,7 @@ function! xbuild#destination#Pick() abort
 endfunction
 
 function! xbuild#destination#PickFromCache() abort
+	let s:choices = []
 	if !filereadable(xbuild#destination#Path())
 		echohl ErrorMsg
 		echom "[xbuild.vim]: No destinations cache found. Run :XDestination first."
