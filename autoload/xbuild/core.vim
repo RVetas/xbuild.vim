@@ -35,50 +35,67 @@ function! xbuild#core#ExtractJson(output) abort
 endfunction
 
 function! xbuild#core#RunAsyncCommandInBuffer(command)
-  " Создаем буфер и окно
-  let l:bufname = 'AsyncCommand:' . reltimestr(reltime())
-  let l:bufnr = bufadd(l:bufname)
-  call bufload(l:bufnr)
-  call setbufvar(l:bufnr, '&buftype', 'nofile')
-  call setbufvar(l:bufnr, '&bufhidden', 'hide')
-  call setbufvar(l:bufnr, '&swapfile', v:false)
-  call setbufvar(l:bufnr, '&colorcolumn', '')
+	let current_win_id = win_getid()
+	" Создаем буфер и окно
+	let l:bufname = 'AsyncCommand:' . reltimestr(reltime())
+	let l:bufnr = bufadd(l:bufname)
+	call bufload(l:bufnr)
+	call setbufvar(l:bufnr, '&buftype', 'nofile')
+	call setbufvar(l:bufnr, '&bufhidden', 'hide')
+	call setbufvar(l:bufnr, '&swapfile', v:false)
 
-  execute 'belowright split | resize 10 | buffer' l:bufnr
-  call setbufline(l:bufnr, 1, '> ' . a:command)
 
-  " Создаем обработчики с замыканием
-  let l:On_stdout = {chan, msg ->
-        \ map(split(msg, "\n"), {_, line ->
-        \   line !=# '' ? appendbufline(l:bufnr, '$', [line]) : 0 })}
+	execute 'belowright split | resize 10 | buffer' l:bufnr
+	call setbufline(l:bufnr, 1, '> ' . a:command)
 
-  let l:On_stderr = {chan, msg ->
-        \ map(split(msg, "\n"), {_, line ->
-        \   line !=# '' ? appendbufline(l:bufnr, '$', ["stderr: " . line]) : 0 })}
+	" Находим новое окно, выставляем colorcolumn для него
+	let wins = win_findbuf(l:bufnr)
+	if !empty(wins)
+		let new_win = wins[0]
+		let new_win_nr = win_id2win(new_win)
+		call setwinvar(new_win_nr, '&colorcolumn', 999)
+	endif
 
-  let l:On_close = {chan ->
-			  \ appendbufline(l:bufnr, '$', ['--- [xbuild.vim] END ---']) }
+	" Создаем обработчики с замыканием
+	let l:On_stdout = {chan, msg ->
+		\ map(split(msg, "\n"), {_, line ->
+		\   line !=# '' ? appendbufline(l:bufnr, '$', [line]) : 0 }
+		\)
+	\}
 
-  " Запускаем команду
-  let l:job = job_start(['sh', '-c', a:command])
+	let l:On_stderr = {chan, msg ->
+		\ map(split(msg, "\n"), {_, line ->
+		\   line !=# '' ? appendbufline(l:bufnr, '$', ["stderr: " . line]) : 0 }
+		\ ) 
+	\ }
 
-  " Получаем канал
-  let l:chan = job_getchannel(l:job)
-  " Привязываем job-id к буферу
-  call setbufvar(l:bufnr, 'async_job_id', l:job)
+	let l:On_close = {chan ->
+		\ appendbufline(l:bufnr, '$', ['--- [xbuild.vim] END ---'])
+	\}
 
-  " Назначаем колбэки
-  call ch_setoptions(l:chan, {
-        \ 'out_cb': l:On_stdout,
+	" Запускаем команду
+	let l:job = job_start(['sh', '-c', a:command])
+
+	" Получаем канал
+	let l:chan = job_getchannel(l:job)
+	" Привязываем job-id к буферу
+	call setbufvar(l:bufnr, 'async_job_id', l:job)
+
+	" Назначаем колбэки
+	call ch_setoptions(l:chan, {
+		\ 'out_cb': l:On_stdout,
 		\ 'err_cb': l:On_stderr,
-        \ 'close_cb': l:On_close,
-        \ })
+		\ 'close_cb': l:On_close,
+		\ })
 
-  " Отмена джобы при закрытии буфера
-  execute 'augroup xbuild_async_job_cleanup_' . l:bufnr
-  autocmd!
-  execute 'autocmd BufWipeout <buffer=' . l:bufnr . '> call job_stop(' . l:job . ', "term")'
-  augroup END
+	" Отмена джобы при закрытии буфера
+	execute 'augroup xbuild_async_job_cleanup_' . l:bufnr
+	autocmd!
+	execute 'autocmd BufWipeout <buffer=' . l:bufnr . '> call job_stop(' . l:job . ', "term")'
+	augroup END
+
+	" Возвращаемся в буфер, из которого стартовали команду
+	call win_gotoid(current_win_id)
 endfunction
 
 " Return: a dictionary representing build settings. 
