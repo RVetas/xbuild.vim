@@ -107,7 +107,7 @@ function! xbuild#core#GetBuildSettings() abort
 endfunction
 	
 function! xbuild#core#GetBuildSettingsAsync(callback) abort
-	let l:cmd = xbuild#command#Xcodebuild("-showBuildSettings", extend({"json":""}, xbuild#command#DefaultOptions()))
+	let l:cmd = xbuild#command#Xcodebuild("-showBuildSettings", extend({"json":""}, xbuild#command#DefaultOptions()), 0)
 	let l:tempfile = tempname()
 
 	call job_start(

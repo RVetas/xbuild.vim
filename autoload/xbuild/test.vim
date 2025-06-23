@@ -7,15 +7,7 @@ function! xbuild#test#Run() abort
 		return
 	endif
 
-	let l:cmd = 'xcodebuild ' . g:xbuild_project .
-	  \ ' -scheme ' . shellescape(g:xbuild_scheme) .
-	  \ ' -destination id=' . shellescape(l:destination_id) .
-	  \ ' test'
-
-	if executable('xcpretty')
-		let l:cmd .= ' | xcpretty'
-	endif
-
+	let l:cmd = xbuild#command#Xcodebuild('test', xbuild#command#DefaultOptions())
 	call xbuild#core#RunAsyncCommandInBuffer(cmd)
 endfunction
 
@@ -28,14 +20,6 @@ function! xbuild#test#RunWithoutBuilding() abort
 		return
 	endif
 
-	let l:cmd = 'xcodebuild ' . g:xbuild_project .
-	  \ ' -scheme ' . shellescape(g:xbuild_scheme) .
-	  \ ' -destination id=' . shellescape(l:destination_id) .
-	  \ ' test-without-building'
-
-	if executable('xcpretty')
-		let l:cmd .= ' | xcpretty'
-	endif
-
+	let l:cmd = xbuild#command#Xcodebuild('test-without-building', xbuild#command#DefaultOptions())
 	call xbuild#core#RunAsyncCommandInBuffer(cmd)
 endfunction

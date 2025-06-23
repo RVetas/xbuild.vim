@@ -1,4 +1,4 @@
-function! xbuild#command#Xcodebuild(action, options) abort
+function! xbuild#command#Xcodebuild(action, options, shouldUsePretty = 1) abort
 	let options_string = ""
 	for key in keys(a:options)
 		if empty(a:options[key])
@@ -7,7 +7,11 @@ function! xbuild#command#Xcodebuild(action, options) abort
 			let options_string = options_string . " -" . key . " " . '"' . a:options[key] . '"'
 		endif
 	endfor
-	return "xcodebuild " . a:action . options_string
+	let cmd = "xcodebuild " . a:action . options_string
+	if executable('xcpretty') && a:shouldUsePretty
+		let cmd .= ' | xcpretty'
+	endif
+	return cmd
 endfunction
 
 function! xbuild#command#DefaultOptions() abort

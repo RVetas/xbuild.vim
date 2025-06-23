@@ -21,7 +21,7 @@ function! xbuild#run#OnRunCallback(build_settings_string) abort
 		echohl None
 		return
 	endif
-	let l:bundle_id = build_settings["PRODUCT_BUNDLE_IDENTIFIER"]
+	let l:bundle_id = l:build_settings["PRODUCT_BUNDLE_IDENTIFIER"]
 
 	let l:app_path = l:build_settings["CONFIGURATION_BUILD_DIR"] . '/' . l:build_settings["CONTENTS_FOLDER_PATH"]
 	if empty(l:app_path)
@@ -32,9 +32,6 @@ function! xbuild#run#OnRunCallback(build_settings_string) abort
 	endif
 
 	let l:build_cmd = xbuild#command#Xcodebuild('build', xbuild#command#DefaultOptions())
-	if executable('xcpretty')
-	  let l:build_cmd .= ' | xcpretty'
-	endif
 
 	let l:open_cmd = 'open -a "Simulator" || true'
 	let l:boot_cmd = 'xcrun simctl boot ' . l:destination_id . ' || true'

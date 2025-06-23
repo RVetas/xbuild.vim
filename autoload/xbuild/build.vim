@@ -8,11 +8,6 @@ function! xbuild#build#Run() abort
 	endif
 
 	let cmd = xbuild#command#Xcodebuild("build", xbuild#command#DefaultOptions())
-
-	if executable('xcpretty')
-	  let l:cmd .= ' | xcpretty'
-	endif
-
 	call xbuild#core#RunAsyncCommandInBuffer(cmd)
 endfunction
 
