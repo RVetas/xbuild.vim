@@ -26,7 +26,7 @@ function! xbuild#destination#Pick() abort
 
 	echom "[xbuild.vim]: Retrieving destinations..."
 	let s:tempfile = tempname()
-	let l:command = xbuild#command#Xcodebuild("-showdestinations", xbuild#command#ProjectOptions()) . ' > ' . s:tempfile
+	let l:command = xbuild#command#Xcodebuild("-showdestinations", xbuild#command#ProjectOptions(), 0) . ' > ' . s:tempfile
 	let l:cmd = ['sh', '-c', l:command]
 	call job_start(l:cmd, {'exit_cb': function('xbuild#destination#PickFromXcodebuild')})
 endfunction
